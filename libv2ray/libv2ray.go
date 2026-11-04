@@ -13,10 +13,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/xtls/xray-core/app/stats"
+	_ "github.com/xtls/xray-core/app/stats"
 	corefilesystem "github.com/xtls/xray-core/common/platform/filesystem"
 	"github.com/xtls/xray-core/core"
-	"github.com/xtls/xray-core/features/stats"
+	corestats "github.com/xtls/xray-core/features/stats"
 	"github.com/xtls/xray-core/infra/conf/serial"
 
 	// Register all protocols and features for Xray-core
@@ -137,11 +137,11 @@ func (c *CoreController) QueryAllOutboundTrafficStats() string {
 		return ""
 	}
 
-	statsFeature := server.GetFeature(stats.ManagerType())
+	statsFeature := server.GetFeature(corestats.ManagerType())
 	if statsFeature == nil {
 		return ""
 	}
-	manager, ok := statsFeature.(stats.Manager)
+	manager, ok := statsFeature.(corestats.Manager)
 	if !ok {
 		return ""
 	}
