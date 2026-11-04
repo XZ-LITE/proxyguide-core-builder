@@ -1,6 +1,7 @@
 # Binaries and outputs
 output/
 release-bundle/
+extracted-*/
 *.zip
 *.aar
 *.so
