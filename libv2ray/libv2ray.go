@@ -76,12 +76,17 @@ func (c *CoreController) StartLoop(configContent string, fd int) error {
 		_ = os.Setenv("XRAY_TUN_FD", strconv.Itoa(fd))
 	}
 
-	cfg, err := serial.DecodeJSONConfig(strings.NewReader(configContent))
+	rawConfig, err := serial.DecodeJSONConfig(strings.NewReader(configContent))
 	if err != nil {
 		return fmt.Errorf("failed to decode config: %w", err)
 	}
 
-	server, err := core.New(cfg)
+	coreConfig, err := rawConfig.Build()
+	if err != nil {
+		return fmt.Errorf("failed to build core config: %w", err)
+	}
+
+	server, err := core.New(coreConfig)
 	if err != nil {
 		return fmt.Errorf("failed to create core instance: %w", err)
 	}
@@ -169,12 +174,17 @@ func MeasureOutboundDelay(configContent string, testURL string) (int64, error) {
 		testURL = "https://cp.cloudflare.com/generate_204"
 	}
 
-	cfg, err := serial.DecodeJSONConfig(strings.NewReader(configContent))
+	rawConfig, err := serial.DecodeJSONConfig(strings.NewReader(configContent))
 	if err != nil {
 		return -1, fmt.Errorf("decode config error: %w", err)
 	}
 
-	server, err := core.New(cfg)
+	coreConfig, err := rawConfig.Build()
+	if err != nil {
+		return -1, fmt.Errorf("build core config error: %w", err)
+	}
+
+	server, err := core.New(coreConfig)
 	if err != nil {
 		return -1, fmt.Errorf("new core error: %w", err)
 	}
