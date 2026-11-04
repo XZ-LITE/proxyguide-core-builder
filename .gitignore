@@ -1,0 +1,9 @@
+# Binaries and outputs
+output/
+release-bundle/
+*.zip
+*.aar
+*.so
+mihomo-src/
+.DS_Store
+Thumbs.db
