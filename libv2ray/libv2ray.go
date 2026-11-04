@@ -13,6 +13,9 @@ import (
 	"sync"
 	"time"
 
+	// Preserve gomobile in module graph
+	_ "golang.org/x/mobile/bind"
+
 	_ "github.com/xtls/xray-core/app/stats"
 	corefilesystem "github.com/xtls/xray-core/common/platform/filesystem"
 	"github.com/xtls/xray-core/core"

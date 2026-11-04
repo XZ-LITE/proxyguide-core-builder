@@ -28,6 +28,7 @@ jobs:
 
       - name: Set up Android NDK r26d
         uses: nttld/setup-ndk@v1
+        id: setup-ndk
         with:
           ndk-version: r26d
 
@@ -35,17 +36,20 @@ jobs:
         run: |
           go install golang.org/x/mobile/cmd/gomobile@latest
           go install golang.org/x/mobile/cmd/gobind@latest
+          export ANDROID_NDK_HOME="${{ steps.setup-ndk.outputs.ndk-path }}"
           gomobile init
 
       - name: Download Go Dependencies
         run: |
           cd libv2ray
+          go get golang.org/x/mobile/bind@latest
           go get golang.org/x/mobile@latest
           go mod tidy
           go mod download
 
       - name: Build libv2ray.aar
         run: |
+          export ANDROID_NDK_HOME="${{ steps.setup-ndk.outputs.ndk-path }}"
           mkdir -p output/libs
           cd libv2ray
           gomobile bind -v \
