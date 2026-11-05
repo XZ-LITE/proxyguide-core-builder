@@ -13,6 +13,7 @@ import (
 	"sync"
 	"time"
 
+	mobasset "golang.org/x/mobile/asset"
 	// Preserve gomobile in module graph
 	_ "golang.org/x/mobile/bind"
 
@@ -31,13 +32,22 @@ func InitCoreEnv(envPath string, key string) {
 	if envPath != "" {
 		_ = os.Setenv("xray.location.asset", envPath)
 		_ = os.Setenv("v2ray.location.asset", envPath)
-		corefilesystem.NewFileReader = func(path string) (io.ReadCloser, error) {
-			targetPath := filepath.Join(envPath, path)
-			return os.Open(targetPath)
-		}
 	}
 	if key != "" {
 		_ = os.Setenv("xray.xudp.basekey", key)
+	}
+	corefilesystem.NewFileReader = func(path string) (io.ReadCloser, error) {
+		if _, err := os.Stat(path); err == nil {
+			return os.Open(path)
+		}
+		if envPath != "" {
+			combined := filepath.Join(envPath, path)
+			if _, err := os.Stat(combined); err == nil {
+				return os.Open(combined)
+			}
+		}
+		_, file := filepath.Split(path)
+		return mobasset.Open(file)
 	}
 }
 
