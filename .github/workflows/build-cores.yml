@@ -51,6 +51,7 @@ jobs:
       - name: Build libv2ray.aar
         run: |
           export ANDROID_NDK_HOME="${{ steps.setup-ndk.outputs.ndk-path }}"
+          export CGO_LDFLAGS="-Wl,-z,max-page-size=16384"
           mkdir -p output/libs
           cd libv2ray
           gomobile bind -v \
@@ -119,7 +120,7 @@ jobs:
           mkdir -p ../output/jniLibs/${{ matrix.arch }}
           go build -v -trimpath \
             -tags "with_gvisor" \
-            -ldflags="-s -w -buildid= -X 'github.com/metacubex/mihomo/constant.Version=ProxyGuide-Custom'" \
+            -ldflags="-s -w -buildid= -extldflags '-Wl,-z,max-page-size=16384' -X 'github.com/metacubex/mihomo/constant.Version=ProxyGuide-Custom'" \
             -o ../output/jniLibs/${{ matrix.arch }}/libmihomo.so \
             ./
 

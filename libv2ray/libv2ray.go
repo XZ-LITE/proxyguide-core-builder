@@ -83,7 +83,9 @@ func (c *CoreController) StartLoop(configContent string, fd int) error {
 	}
 
 	if fd > 0 {
-		_ = os.Setenv("XRAY_TUN_FD", strconv.Itoa(fd))
+		fdStr := strconv.Itoa(fd)
+		_ = os.Setenv("xray.tun.fd", fdStr)
+		_ = os.Setenv("XRAY_TUN_FD", fdStr)
 	}
 
 	rawConfig, err := serial.DecodeJSONConfig(strings.NewReader(configContent))
